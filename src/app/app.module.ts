@@ -1,11 +1,16 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { AppComponent } from './app.component';
-import { MyServiceBase } from './my-service.base';
-import { MyServiceMock } from './my-service-mock';
-import { MyService } from './my-service';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {AppComponent} from './app.component';
+import {MyServiceBase} from './my-service.base';
+import {MyServiceMock} from './my-service-mock';
+import {MyService} from './my-service';
 
-const isMock = Math.random() > 0.5;
+export let myServiceFactory = () => {
+
+  const isMock = Math.random() > 0.5;
+
+  return isMock ? new MyServiceMock() : new MyService();
+};
 
 @NgModule({
   declarations: [
@@ -15,8 +20,9 @@ const isMock = Math.random() > 0.5;
     BrowserModule
   ],
   providers: [
-    { provide: MyServiceBase, useClass: (isMock) ? MyServiceMock : MyService },
+    {provide: MyServiceBase, useFactory: myServiceFactory},
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
